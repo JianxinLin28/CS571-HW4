@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script>
+    const data = [
+      { name: "Last Semester", value: 13 },
+      { name: "Current Semester", value: 23 }
+    ];
+
+    const width = 400;
+    const height = 300;
+    const margin = 40;
+
+    const svg = d3.select("#chart");
+
+    const xScale = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([margin, width - margin])
+      .padding(0.2);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, 30])
+      .range([height - margin, margin]);
+
+    svg.selectAll("rect")
+      .data(data)
+      .join("rect")
+      .attr("x", d => xScale(d.name))
+      .attr("y", d => yScale(d.value))
+      .attr("width", xScale.bandwidth())
+      .attr("height", d => height - margin - yScale(d.value))
+      .attr("fill", "steelblue");
+
+    svg.append("g")
+      .attr("transform", `translate(0, ${height - margin})`)
+      .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+      .attr("transform", `translate(${margin}, 0)`)
+      .call(d3.axisLeft(yScale));
+
+    svg.attr("xmlns", "http://www.w3.org/2000/svg");
+
+    const svgString = new XMLSerializer()
+        .serializeToString(svg.node());
+
+    const blob = new Blob([svgString], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+
+    const img = new Image();
+
+    img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 400;
+        canvas.height = 300;
+
+        const ctx = canvas.getContext("2d");
+
+        // White background
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(pngBlob => {
+            if (!pngBlob) return;
+
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(pngBlob);
+            link.download = "part1_1-bar-chart.png";
+            link.click();
+
+            URL.revokeObjectURL(link.href);
+            URL.revokeObjectURL(url);
+        }, "image/png");
+    };
+
+    img.src = url;
+  </script>
+</body>
+</html>
