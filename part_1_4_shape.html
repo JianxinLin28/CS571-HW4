@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script>
+    const width = 600;
+    const height = 300;
+    const margin = 50;
+
+    const svg = d3.select("#chart");
+
+    function generateDots(count, centerX, centerY, group) {
+      const dots = [];
+      const minDistance = 14;
+      let attempts = 0;
+
+      while (dots.length < count && attempts < 10000) {
+        attempts++;
+
+        const dot = {
+          x: centerX + (Math.random() - 0.5) * 100,
+          y: centerY + (Math.random() - 0.5) * 120,
+          group: group
+        };
+
+        const overlaps = dots.some(d =>
+          Math.hypot(d.x - dot.x, d.y - dot.y) < minDistance
+        );
+
+        if (!overlaps) {
+          dots.push(dot);
+        }
+      }
+
+      return dots;
+    }
+
+    const leftDots = generateDots(13, 140, 120, "Left Group");
+    const rightDots = generateDots(23, 320, 120, "Right Group");
+
+    const data = [...leftDots, ...rightDots];
+
+    // LEFT GROUP: circles
+    svg.selectAll(".left-circle")
+      .data(data.filter(d => d.group === "Left Group"))
+      .join("circle")
+      .attr("class", "left-circle")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("r", 5)
+      .attr("fill", "steelblue");
+
+    // Symbol generator for triangles
+    const triangle = d3.symbol()
+      .type(d3.symbolTriangle)
+      .size(100);
+
+    // RIGHT GROUP: triangles
+    svg.selectAll(".right-triangle")
+      .data(data.filter(d => d.group === "Right Group"))
+      .join("path")
+      .attr("class", "right-triangle")
+      .attr("d", triangle)
+      .attr("transform", d => `translate(${d.x}, ${d.y})`)
+      .attr("fill", "steelblue");
+
+    // x-axis line
+    svg.append("line")
+      .attr("x1", margin)
+      .attr("x2", width - margin)
+      .attr("y1", height - margin)
+      .attr("y2", height - margin)
+      .attr("stroke", "black");
+
+    // // Draw x-axis line
+    // svg.append("line")
+    //   .attr("x1", margin)
+    //   .attr("x2", width - margin)
+    //   .attr("y1", height - margin)
+    //   .attr("y2", height - margin)
+    //   .attr("stroke", "black");
+
+    // Add x-axis labels below clusters
+    svg.append("text")
+      .attr("x", 140)
+      .attr("y", height - margin + 25)
+      .attr("text-anchor", "middle")
+      .text("Last Semester");
+
+    svg.append("text")
+      .attr("x", 320)
+      .attr("y", height - margin + 25)
+      .attr("text-anchor", "middle")
+      .text("Current Semester");
+
+    svg.attr("xmlns", "http://www.w3.org/2000/svg");
+
+    const svgString = new XMLSerializer()
+        .serializeToString(svg.node());
+
+    const blob = new Blob([svgString], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+
+    const img = new Image();
+
+    img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 400;
+        canvas.height = 300;
+
+        const ctx = canvas.getContext("2d");
+
+        // White background
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(pngBlob => {
+            if (!pngBlob) return;
+
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(pngBlob);
+            link.download = "part1_4-shape.png";
+            link.click();
+
+            URL.revokeObjectURL(link.href);
+            URL.revokeObjectURL(url);
+        }, "image/png");
+    };
+
+    img.src = url;
+  </script>
+</body>
+</html>
