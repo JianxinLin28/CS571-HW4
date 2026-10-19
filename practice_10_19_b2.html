@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+  <script>
+    const data = [
+      { name: "A", value: 20 },
+      { name: "B", value: 50 },
+      { name: "C", value: 80 }
+    ];
+
+    const svg = d3.select("#chart");
+
+    const y = d3.scaleLinear()
+      .domain([0, 100])
+      .range([250, 50]);
+
+    svg.selectAll("circle")
+      .data(data)
+      .join("circle")
+      .attr("cx", (d, i) => 80 + i * 100)
+      .attr("cy", d => y(d.value))
+      .attr("r", d => d.value >= 50 ? 15 : 8)
+      .attr("fill", d => d.value >= 50 ? "orange" : "steelblue");
+</script>
+</body>
+</html>
