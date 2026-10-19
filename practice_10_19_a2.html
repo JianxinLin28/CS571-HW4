@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script>
+    const data = [
+      { name: "A", score: 20 },
+      { name: "B", score: 50 },
+      { name: "C", score: 80 }
+    ];
+
+    // WRITE YOUR CODE HERE
+    const svg = d3.select("#chart");
+
+    const xScale = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([50, 350]);
+    
+    const yScale = d3.scaleLinear()
+      .domain([0, 100])
+      .range([250, 50]);
+    
+    svg.selectAll("circle")
+      .data(data)
+      .join("circle")
+      .attr("cx", d => xScale(d.name)+xScale.bandwidth()/2)
+      .attr("cy", d => yScale(d.score))
+      .attr("r", 12)
+      .attr("fill", "steelblue");
+
+  </script>
+</body>
+</html>

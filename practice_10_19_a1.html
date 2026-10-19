@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="200"></svg>
+
+  <script>
+    const data = [10, 30, 50, 70];
+
+    // WRITE YOUR CODE HERE
+    const svg = d3.select("#chart");
+
+    svg.selectAll("circle")
+      .data(data)
+      .join("circle")
+      .attr("cx", (d, i) => 60+i*90)
+      .attr("cy", d => 150-d)
+      .attr("r", 10)
+      .attr("fill", "steelblue");
+
+  </script>
+</body>
+</html>
