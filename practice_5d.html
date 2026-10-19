@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script>
+    const data = [20, 50, 80];
+    const y = d3.scaleLinear()
+        .domain([0, 100])
+        .range([250, 50]);
+    
+    const svg = d3.select("svg");
+
+    svg.selectAll("circle")
+        .data(data)
+        .join("circle")
+        .attr("cx", (d, i) => 80 + i * 100)
+        .attr("cy", d => y(d))
+        .attr("r", 12)
+        .attr("fill", "steelblue");
+
+    svg.attr("xmlns", "http://www.w3.org/2000/svg");
+  </script>
+</body>
+</html>

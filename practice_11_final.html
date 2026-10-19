@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="500" height="350"></svg>
+
+  <script>
+    const data = [
+      { id: "a", name: "Art",     visitors: 20 },
+      { id: "b", name: "History", visitors: 60 },
+      { id: "c", name: "Science", visitors: 40 },
+      { id: "d", name: "Music",   visitors: 80 }
+    ];
+
+    const width = 360;
+    const height = 240;
+
+    const svg = d3.select("#chart");
+
+    const x = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([0, width])
+      .paddingInner(0.2)
+      .paddingOuter(0);
+
+    const y = d3.scaleLinear()
+      .domain([0, 100])
+      .range([height, 0]);
+
+    const g = svg.append("g")
+      .attr("transform", "translate(60, 30)");
+
+    g.selectAll(".bar")
+      .data(data, d => d.id)
+      .join("rect")
+      .attr("class", "bar")
+      .attr("x", d => x(d.name))
+      .attr("y", d => y(d.visitors))
+      .attr("width", x.bandwidth())
+      .attr("height", d => height - y(d.visitors))
+      .attr("fill", "steelblue");
+
+    g.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
+
+    g.append("g")
+      .attr("class", "y-axis")
+      .call(d3.axisLeft(y).ticks(5));
+  </script>
+</body>
+</html>

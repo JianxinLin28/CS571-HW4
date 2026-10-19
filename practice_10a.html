@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script>
+    const data = [
+      { name: "A", value: 20 },
+      { name: "B", value: 50 },
+      { name: "C", value: 80 }
+    ];
+
+    const svg = d3.select("#chart");
+
+    const x = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([0, 300]);
+
+    const y = d3.scaleLinear()
+      .domain([0, 100])
+      .range([200, 0]);
+
+    const g = svg.append("g")
+      .attr("transform", "translate(50, 30)");
+
+    g.selectAll("rect")
+      .data(data)
+      .join("rect")
+      .attr("x", d => x(d.name))
+      .attr("y", d => y(d.value))
+      .attr("width", x.bandwidth())
+      .attr("height", d => 200 - y(d.value))
+      .attr("fill", "steelblue");
+
+    g.append("g")
+      .attr("transform", "translate(0, 200)")
+      .call(d3.axisBottom(x));
+
+    g.append("g")
+      .call(d3.axisLeft(y));
+  </script>
+</body>
+</html>

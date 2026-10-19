@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+  <svg id="chart" width="400" height="300"></svg>
+
+  <script>
+    const next = [20, 50, 80];
+    const svg = d3.select("#chart");
+
+    const y = d3.scaleLinear()
+        .domain([0, 100])
+        .range([250, 0]);
+
+    const bars = svg.selectAll("rect")
+        .data(next)
+        .join("rect")
+        .attr("x", (d, i) => 50 + i * 100)
+        .attr("y", d => y(d))
+        .attr("width", 40)
+        .attr("height", d => 250 - y(d))
+        .attr("fill", "steelblue");
+  </script>
+</body>
+</html>
